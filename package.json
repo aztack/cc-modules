@@ -1,0 +1,26 @@
+{
+  "name": "cc-modules",
+  "version": "0.0.1",
+  "description": "A Cocos Creator Module Manager",
+  "author": "wangweihua <wangweihua@vipkid.com.cn>",
+  "main": "index.js",
+  "main-menu": {
+    "i18n:MAIN_MENU.package.title/i18n:cc-modules.title": {
+      "command": "Editor.Panel.open",
+      "params": [
+        "cc-modules"
+      ]
+    }
+  },
+  "panel": {
+    "main": "panel/index.js",
+    "type": "dockable",
+    "title": "CC Module Manager",
+    "width": 300,
+    "height": 800
+  },
+  "profiles": {
+    "docs": "http://docs.cocos.com/creator/manual/zh/",
+    "forum": "http://forum.cocos.com/c/Creator"
+  }
+}

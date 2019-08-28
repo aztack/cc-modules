@@ -1,0 +1,25 @@
+<div>
+  <ui-section id="gitlabSettings">
+    <div class="header">Gitlab Settings</div>
+    <
+    <ui-prop name="End Point" @change="onPropChange" type="string" data-key="endpoint" :value="gitlab.endpoint"></ui-prop>
+    <ui-prop name="Private Token" @change="onPropChange" type="string" data-key="privateToken" :value="gitlab.privateToken"></ui-prop>
+    <ui-prop name="API Version" @change="onPropChange" type="string" data-key="apiVer" :value="gitlab.apiVer"></ui-prop>
+    <ui-prop name="Namespace Id" @change="onPropChange" type="string" data-key="nsId" :value="gitlab.nsId"></ui-prop>
+    <ui-prop name="Namespace Name" @change="onPropChange" type="string" data-key="ns" :value="gitlab.ns"></ui-prop>
+    <ui-button @confirm="saveSettings">
+      Save
+      <i class="icon-ok" v-if="settingsSaved"></i>
+    </ui-button>
+  </ui-section>
+
+  <ui-section>
+    <div class="header">Available Components & Utils</div>
+    <ul v-if="items.length > 0">
+      <li v-for="it in items">
+        <span>{{it.name}}</span>&nbsp;
+        <span>{{it.desc}}</span>
+      </li>
+    </ul>
+  </ul-section>
+</div>

@@ -1,0 +1,7 @@
+.cc-custom-panel {
+  flex: 1;
+  padding: 10px;
+  padding-top: 0px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
