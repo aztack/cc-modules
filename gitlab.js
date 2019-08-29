@@ -1,3 +1,5 @@
+const $fs = require('fs');
+
 const gitlab = {
   GITLAB: {
     privateToken: '',
@@ -25,6 +27,9 @@ const gitlab = {
     if (!branch) branch = 'master'
     return `${this.GITLAB.endpoint}/${this.GITLAB.ns}/raw/${branch}/${filename}`;
   },
+  urlOfArchive(projectId, sha) {
+    return this.apiUrl(`projects/${projectId}/repository/archive?sha=${sha}`);
+  },
   fetchRaw() {
 
   },
@@ -34,8 +39,8 @@ const gitlab = {
         'Private-Token': this.GITLAB.privateToken
       }
     }).then(res => {
-      if (type === 'json') {
-        return res.json();
+      if (typeof res[type] === 'function') {
+        return res[type]();
       } else {
         return res.text();
       }
@@ -63,6 +68,21 @@ const gitlab = {
     id = id || this.GITLAB.nsId;
     const url = this.apiUrl('groups', id);
     return this.fetchJson(url);
+  },
+  downloadArchive(id, sha, filename) {
+    if (typeof sha === 'undefined') sha = 'master';
+    const url = this.urlOfArchive(id, sha);
+    return new Promise((resolve, reject) => {
+      this.fetch(url, 'blob').then(blob => {
+        var fileReader = new FileReader();
+        fileReader.onload = () => {
+          $fs.writeFileSync(filename, Buffer(new Uint8Array(this.result)));
+          resolve();
+        };
+        fileReader.onerror = reject;
+        fileReader.readAsArrayBuffer(blob);
+      });
+    });
   }
 };
 module.exports = gitlab;

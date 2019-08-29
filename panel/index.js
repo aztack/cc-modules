@@ -14,6 +14,7 @@ const vm = (el) => {
           privateToken: localStorage.getItem('privateToken'),
           nsId: localStorage.getItem('nsId'),
           ns:localStorage.getItem('ns'),
+          moduleDirectory: localStorage.getItem('moduleDirectory') || 'scripts/cc_modules',
         },
         settingsSaved: false,
         items: []
@@ -51,7 +52,7 @@ const vm = (el) => {
       getProjects() {
         $gitlab.groups()
           .then(data => data.projects.filter(p => p.name.indexOf('comp-') === 0))
-          .then(all => all.map(p => ({name: p.name, desc: p.description})))
+          .then(all => all.map(p => ({name: p.name, desc: p.description, id: p.id})))
           .then(all => this.items = all)
       },
       onPropChange(e) {
@@ -60,6 +61,13 @@ const vm = (el) => {
       },
       clickSection(id) {
         this.$el.querySelector(`${id} .header`).click();
+      },
+      hasSettings() {
+        const values = Object.values(this.gitlab);
+        return values.filter(v => v != null).length === values.length;
+      },
+      download(projectId) {
+        $gitlab.downloadArchive(projectId, 'master', `comp-gif.zip`);
       }
     }
   });

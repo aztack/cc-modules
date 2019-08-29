@@ -7,6 +7,7 @@
     <ui-prop name="API Version" @change="onPropChange" type="string" data-key="apiVer" :value="gitlab.apiVer"></ui-prop>
     <ui-prop name="Namespace Id" @change="onPropChange" type="string" data-key="nsId" :value="gitlab.nsId"></ui-prop>
     <ui-prop name="Namespace Name" @change="onPropChange" type="string" data-key="ns" :value="gitlab.ns"></ui-prop>
+    <ui-prop name="Module Directory" @change="onPropChange" type="string" data-key="ns" :value="gitlab.moduleDirectory"></ui-prop>
     <ui-button @confirm="saveSettings">
       Save
       <i class="icon-ok" v-if="settingsSaved"></i>
@@ -15,10 +16,12 @@
 
   <ui-section>
     <div class="header">Available Components & Utils</div>
+    <span v-if="!hasSettings()">Please fill above Gitlab settings</span>
     <ul v-if="items.length > 0">
-      <li v-for="it in items">
-        <span>{{it.name}}</span>&nbsp;
+      <li v-for="it in items" :data-id="it.id">
+        <span :title="it.id">{{it.name}}</span>&nbsp;
         <span>{{it.desc}}</span>
+        <a href="javascript:;" @click="download(it.id)"><i class="icon-list-add"></i></a>
       </li>
     </ul>
   </ul-section>
