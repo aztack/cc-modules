@@ -15,9 +15,8 @@ module.exports = {
    * @see https://docs.cocos.com/creator/manual/zh/extension/entry-point.html#ipc-消息注册
    */
   messages: {
-    ['cc-modules:clicked']() {
-      Editor.log('cc-modules:clicked'); // Printed in Cocos Creator Console
-      Editor.Ipc.sendToPanel('cc-modules', 'changeText', 'Wow!');
+    ['asset-db:assets-deleted'](e) {
+      Editor.Ipc.sendToPanel('cc-modules', 'assetsDeleted', e);
     }
   }
 };

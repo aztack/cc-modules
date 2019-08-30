@@ -22,5 +22,8 @@
   "profiles": {
     "docs": "http://docs.cocos.com/creator/manual/zh/",
     "forum": "http://forum.cocos.com/c/Creator"
+  },
+  "dependencies": {
+    "unzip": "^0.1.11"
   }
 }

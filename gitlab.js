@@ -27,8 +27,9 @@ const gitlab = {
     if (!branch) branch = 'master'
     return `${this.GITLAB.endpoint}/${this.GITLAB.ns}/raw/${branch}/${filename}`;
   },
-  urlOfArchive(projectId, sha) {
-    return this.apiUrl(`projects/${projectId}/repository/archive?sha=${sha}`);
+  urlOfArchive(projectId, sha, ext) {
+    if (typeof ext === 'undefined') ext = '.zip'
+    return this.apiUrl(`projects/${projectId}/repository/archive${ext}?sha=${sha}`);
   },
   fetchRaw() {
 
@@ -69,15 +70,25 @@ const gitlab = {
     const url = this.apiUrl('groups', id);
     return this.fetchJson(url);
   },
-  downloadArchive(id, sha, filename) {
+  branches (id, branch) {
+    if (typeof branch === 'undefined') branch = 'master';
+    const url = this.apiUrl('projects', [id, 'repository/branches', branch]);
+    return this.fetchJson(url);
+  },
+  tags (id) {
+    id = id || this.GITLAB.nsId;
+    const url = this.apiUrl('projects', [id, 'repository/tags']);
+    return this.fetchJson(url);
+  },
+  downloadArchive(id, sha) {
     if (typeof sha === 'undefined') sha = 'master';
     const url = this.urlOfArchive(id, sha);
     return new Promise((resolve, reject) => {
       this.fetch(url, 'blob').then(blob => {
         var fileReader = new FileReader();
-        fileReader.onload = () => {
-          $fs.writeFileSync(filename, Buffer(new Uint8Array(this.result)));
-          resolve();
+        fileReader.onload = function () {
+          const buf = Buffer(new Uint8Array(this.result));
+          resolve(buf);
         };
         fileReader.onerror = reject;
         fileReader.readAsArrayBuffer(blob);

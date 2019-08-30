@@ -1,3 +1,3 @@
-module.exports={
-  title:'cc-modules面板',
+module.exports = {
+  title:'组件管理器'
 };

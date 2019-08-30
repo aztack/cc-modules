@@ -14,14 +14,28 @@
     </ui-button>
   </ui-section>
 
-  <ui-section>
+  <ui-section id="comps-utils">
     <div class="header">Available Components & Utils</div>
     <span v-if="!hasSettings()">Please fill above Gitlab settings</span>
-    <ul v-if="items.length > 0">
-      <li v-for="it in items" :data-id="it.id">
-        <span :title="it.id">{{it.name}}</span>&nbsp;
-        <span>{{it.desc}}</span>
-        <a href="javascript:;" @click="download(it.id)"><i class="icon-list-add"></i></a>
+    <ui-button @confirm="refresh">
+      <i class="icon-refresh"></i>
+      Refresh
+    </ui-button>
+    <ul class="comp-list" v-if="items.length > 0">
+      <li class="comp-item layout horizontal" v-for="it in items" :data-id="it.id">
+        <a class="box" href="javascript:;" data-tag="master" :data-id="it.id" @click="download($event, it.id, it.name)"><i class="icon-list-add"></i></a>
+        <ui-select :id="`project-tags-${it.id}`" class="box" class="tiny" value="master"
+          v-if="tags[it.id]"
+          @confirm="onTagChanged($event, it)">
+          <option
+            v-for="tag in tags[it.id]"
+            :value="tag.name">{{tag.name}}
+          </option>
+        </ui-select>
+        <span class="box name" :title="it.id">
+          {{it.name}}
+          <ui-hint class="box desc">{{it.desc}}</ui-hint>
+        </span>
       </li>
     </ul>
   </ul-section>
