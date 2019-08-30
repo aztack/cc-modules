@@ -2,7 +2,7 @@
   "name": "cc-modules",
   "version": "0.0.1",
   "description": "A Cocos Creator Module Manager",
-  "author": "wangweihua <wangweihua@vipkid.com.cn>",
+  "author": "aztack <aztack@163.com>",
   "main": "index.js",
   "main-menu": {
     "i18n:MAIN_MENU.package.title/i18n:cc-modules.title": {
