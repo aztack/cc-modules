@@ -27,9 +27,7 @@ const vm = (el) => {
         this.clickSection('#gitlabSettings');
       }
       Object.assign($gitlab.GITLAB, this.gitlab);
-      this.getProjects().then(() => {
-        this.clickSection('#explaination');
-      });
+      this.getProjects();
     },
     methods: {
       saveSettings() {
