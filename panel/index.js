@@ -2,6 +2,8 @@ const { read, write, extract} = require_('utils.js');
 const $gitlab = require_('gitlab.js');
 const $shell = require_('node_modules/shelljs');
 const $fs = require('fs');
+const NA = 'N/A';
+const UNKNOWN = 'unknown';
 
 const vm = (el) => {
   return new Vue({
@@ -43,7 +45,6 @@ const vm = (el) => {
         setTimeout(() => {
           self.settingsSaved = false;
           this.clickSection('#gitlabSettings');
-          this.clickSection()
         }, 1000);
       },
       refresh() {
@@ -91,7 +92,7 @@ const vm = (el) => {
       },
       download(e, projectId, projectName) {
         const tag = e.target.closest('li').querySelector('ui-select').value
-        if (tag === 'N/A' || tag === 'unknown') {
+        if (tag === NA || tag === UNKNOWN) {
           alert('Please select a valid tag!');
           return;
         }
@@ -104,7 +105,7 @@ const vm = (el) => {
           }
           const to = `${destDir}/${projectName}`;
           if ($fs.existsSync(to)) {
-            confirm(`Please delete existing module first: ${modDir}/${to}`);
+            confirm(`Please delete existing module first!`);
             return;
           }
           let commit = this.tags[projectId].find(t => t.name === tag).commit;
@@ -114,9 +115,14 @@ const vm = (el) => {
           const sha = commit.id;
           extract(srcZip, destDir).then(() => {
             const from = `${destDir}/${projectName}-${tag}-${sha}`;
-            $shell.mv(from, to);
-            this.refreshAssets();
-            this.getProjects();
+            // $fs.renameSync(from, to);
+            setTimeout(() => {
+              $shell.mv(from, to);
+              setTimeout(() => {
+                this.refreshAssets();
+              }, 100);
+              this.getProjects();
+            }, 1000)
           });
         });
       },
@@ -127,26 +133,25 @@ const vm = (el) => {
         return $gitlab.tags(projectId)
           .then(all => {
             const versions = all.filter(p => ({name: p.name}));
-            let finalTags = [{name: 'N/A'},{name: 'unknown'}];
+            let finalTags = [{name: NA},{name: UNKNOWN}];
             let cur = this.getCurrentVersion(projectName, projectId);
 
             if (cur.match(/[0-9.]+/)) {
               finalTags = [];
-              // [v1, v2,...,v3, master]
               cur = 'v' + cur;
               if (!versions.find(tag => tag.name === cur)) {
                 finalTags.push({name: cur});
               }
               finalTags.push({name: 'master'});
               finalTags = finalTags.concat(versions);
-            } else {
-              // [N/a, unknown, master]
-              finalTags.push({name: 'master'});
+            } else if (cur === 'N/A') {
+              finalTags = [{name: NA}, {name: 'master'}].concat(versions);
+            } else if (cur === UNKNOWN) {
+              finalTags = [{name: 'master'}, {name: UNKNOWN}].concat(versions);
             }
             Vue.set(this.tags, projectId, finalTags);
             setTimeout(() => {
               const uiSelect = document.querySelector(`::shadow #project-tags-${projectId}`);
-              // maybe v? or unknown
               uiSelect.value = cur;
             }, 0);
             
@@ -164,16 +169,16 @@ const vm = (el) => {
       },
       getCurrentVersion(name, projectId) {
         const url = Editor.url(`db://assets/${this.gitlab.moduleDirectory}/${name}/package.json`);
-        if (!$fs.existsSync(url)) return 'N/A';
+        if (!$fs.existsSync(url)) return NA;
         try {
           const pkg = JSON.parse($fs.readFileSync(url).toString());
           if (pkg.version) {
             return pkg.version
           } else {
-            return 'unknow';
+            return UNKNOWN;
           }
         } catch (e) {
-          return 'unknow';
+          return UNKNOWN;
         }
       }
     }
