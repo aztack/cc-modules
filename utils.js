@@ -1,5 +1,5 @@
 const pkgName = 'cc-modules';
-const unzip = require('unzip');
+const unzip = require('extract-zip')
 const $fs = require('fs');
 
 function read(relativePath) {
@@ -12,7 +12,16 @@ function write(relativePath, data) {
 }
 
 function extract(srcZip, destDir) {
-  return $fs.createReadStream(srcZip).pipe(unzip.Extract({ path: destDir}));
+//  return $fs.createReadStream(srcZip).pipe(unzip.Extract({ path: destDir}));
+  return new Promise(function (resolve, reject) {
+    unzip(srcZip, {dir: destDir}, function (err) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
 }
 
 module.exports = {

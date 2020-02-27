@@ -1,9 +1,10 @@
-.cc-custom-panel {
+#cc-modules-panel {
   flex: 1;
   padding: 10px;
   padding-top: 0px;
   overflow-y: auto;
   overflow-x: hidden;
+  height: 100%;
 }
 .comp-list {
   padding: 0;

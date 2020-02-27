@@ -20,10 +20,14 @@
     "height": 800
   },
   "profiles": {
-    "docs": "http://docs.cocos.com/creator/manual/zh/",
-    "forum": "http://forum.cocos.com/c/Creator"
+    "project": {
+      "docs": "http://docs.cocos.com/creator/manual/zh/",
+      "forum": "http://forum.cocos.com/c/Creator"
+    },
+    "local": {}
   },
   "dependencies": {
-    "unzip": "^0.1.11"
+    "extract-zip": "^1.6.7",
+    "shelljs": "^0.8.3"
   }
 }

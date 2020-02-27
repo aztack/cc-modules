@@ -2,11 +2,13 @@ const $fs = require('fs');
 
 const gitlab = {
   GITLAB: {
-    privateToken: '',
-    endpoint: '',
-    apiVer: 'api/v4',
-    ns: '',
-    nsId: 0,
+    endpoint: localStorage.getItem('endpoint'),
+    apiVer: localStorage.getItem('apiVer') || 'api/v4',
+    privateToken: localStorage.getItem('privateToken'),
+    nsId: localStorage.getItem('nsId'),
+    ns:localStorage.getItem('ns'),
+    prefixes: localStorage.getItem('prefixes') || 'comp,util',
+    moduleDirectory: localStorage.getItem('moduleDirectory') || 'scripts/cc_modules'
   },
   init(endpoint, privateToken, api) {
     this.GITLAB.endpoint = endpoint;
@@ -37,7 +39,7 @@ const gitlab = {
   fetch(url, type) {
     return window.fetch(url, {
       headers: {
-        'Private-Token': this.GITLAB.privateToken
+        'PRIVATE-TOKEN': this.GITLAB.privateToken
       }
     }).then(res => {
       if (typeof res[type] === 'function') {

@@ -7,24 +7,41 @@
     <ui-prop name="API Version" @change="onPropChange" type="string" data-key="apiVer" :value="gitlab.apiVer"></ui-prop>
     <ui-prop name="Namespace Id" @change="onPropChange" type="string" data-key="nsId" :value="gitlab.nsId"></ui-prop>
     <ui-prop name="Namespace Name" @change="onPropChange" type="string" data-key="ns" :value="gitlab.ns"></ui-prop>
-    <ui-prop name="Module Directory" @change="onPropChange" type="string" data-key="ns" :value="gitlab.moduleDirectory"></ui-prop>
+    <ui-prop name="Module Directory" @change="onPropChange" type="string" data-key="moduleDirectory" :value="gitlab.moduleDirectory"></ui-prop>
+    <ui-prop name="Prefixes" @change="onPropChange" type="string" data-key="prefixes" :value="gitlab.prefixes"></ui-prop>
     <ui-button @confirm="saveSettings">
       Save
       <i class="icon-ok" v-if="settingsSaved"></i>
     </ui-button>
+    <ul style="margin:0;padding:0;">
+      <li>N/A = not installed</li>
+      <li>unknown = installed without version or package.json</li>
+      <li>master = install from master branch</li>
+      <li>vX.Y.Z = installed or to install from tag vX.Y.Z</li>
+    </ul>
   </ui-section>
 
   <ui-section id="comps-utils">
     <div class="header">Available Components & Utils</div>
     <span v-if="!hasSettings()">Please fill above Gitlab settings</span>
-    <ui-button @confirm="refresh">
-      <i class="icon-refresh"></i>
-      Refresh
-    </ui-button>
+    <div class="layout horizontal">
+      <ui-button @confirm="refresh">
+        <i class="icon-refresh"></i>
+        Refresh List
+      </ui-button>
+      <ui-button @confirm="refreshAssets">
+        <i class="icon-refresh"></i>
+        Refresh Assets
+      </ui-button>
+    </div>
+    <div class="error" style="color:red">{{errorMsg}}</div>
     <ul class="comp-list" v-if="items.length > 0">
-      <li class="comp-item layout horizontal" v-for="it in items" :data-id="it.id">
-        <a class="box" href="javascript:;" data-tag="master" :data-id="it.id" @click="download($event, it.id, it.name)"><i class="icon-list-add"></i></a>
-        <ui-select :id="`project-tags-${it.id}`" class="box" class="tiny" value="master"
+      <li class="comp-item layout horizontal" v-for="it in items" :data-id="it.id" style="margin-bottom: 2px;">
+        <a class="box" href="javascript:;" data-tag="master" :data-id="it.id" @click="download($event, it.id, it.name)">
+          <i class="icon-list-add"></i>
+        </a>
+        <ui-select :id="`project-tags-${it.id}`" class="box" class="tiny"
+          style="background-color: transparent;border-radius:2px;width:6em;"
           v-if="tags[it.id]"
           @confirm="onTagChanged($event, it)">
           <option
