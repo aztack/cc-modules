@@ -8,7 +8,7 @@ const gitlab = {
     nsId: localStorage.getItem('nsId'),
     ns:localStorage.getItem('ns'),
     prefixes: localStorage.getItem('prefixes') || 'comp,util',
-    moduleDirectory: localStorage.getItem('moduleDirectory') || 'scripts/cc_modules'
+    moduleDirectory: localStorage.getItem('moduleDirectory') || '/cc_modules'
   },
   init(endpoint, privateToken, api) {
     this.GITLAB.endpoint = endpoint;
