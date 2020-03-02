@@ -21,7 +21,7 @@ Setup mandatory confgiurations.
 - `Namespace Name`: Namespace name where your modules located
 - `Namespace Id`: Namespace id where your modules located.
 - `Module Directory`: Directory where your modules will be downloaded
-- `Prefixes`: Only repository name started with given prefixes will be considered as components
+- `Prefixes`: Only repository name started with given prefixes will be considered as modules
 
 
 ## Screenshot
