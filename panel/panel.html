@@ -1,37 +1,34 @@
 <div>
   <ui-section id="gitlabSettings">
-    <div class="header">Settings</div>
+    <div class="header" v-text="$t('settings')"></div>
     <
-    <ui-prop name="End Point" @change="onPropChange" type="string" data-key="endpoint" :value="gitlab.endpoint"></ui-prop>
-    <ui-prop name="Private Token" @change="onPropChange" type="string" data-key="privateToken" :value="gitlab.privateToken"></ui-prop>
-    <ui-prop name="API Version" @change="onPropChange" type="string" data-key="apiVer" :value="gitlab.apiVer"></ui-prop>
-    <ui-prop name="Namespace Id" @change="onPropChange" type="string" data-key="nsId" :value="gitlab.nsId"></ui-prop>
-    <ui-prop name="Namespace Name" @change="onPropChange" type="string" data-key="ns" :value="gitlab.ns"></ui-prop>
-    <ui-prop name="Module Directory" @change="onPropChange" type="string" data-key="moduleDirectory" :value="gitlab.moduleDirectory"></ui-prop>
-    <ui-prop name="Prefixes" @change="onPropChange" type="string" data-key="prefixes" :value="gitlab.prefixes"></ui-prop>
+    <ui-prop :name="$t('endPoint')" @change="onPropChange" type="string" data-key="endpoint" :value="gitlab.endpoint"></ui-prop>
+    <ui-prop :name="$t('privateToken')" @change="onPropChange" type="string" data-key="privateToken" :value="gitlab.privateToken"></ui-prop>
+    <ui-prop :name="$t('apiVersion')" @change="onPropChange" type="string" data-key="apiVer" :value="gitlab.apiVer"></ui-prop>
+    <ui-prop :name="$t('namespaceId')" @change="onPropChange" type="string" data-key="nsId" :value="gitlab.nsId"></ui-prop>
+    <ui-prop :name="$t('namespaceName')" @change="onPropChange" type="string" data-key="ns" :value="gitlab.ns"></ui-prop>
+    <ui-prop :name="$t('moduleDirectory')" @change="onPropChange" type="string" data-key="moduleDirectory" :value="gitlab.moduleDirectory"></ui-prop>
+    <ui-prop :name="$t('prefixes')" @change="onPropChange" type="string" data-key="prefixes" :value="gitlab.prefixes"></ui-prop>
     <ui-button @confirm="saveSettings">
-      Save
+      {{$t('save')}}
       <i class="icon-ok" v-if="settingsSaved"></i>
     </ui-button>
-    <ul style="margin:0;padding:0;">
-      <li>N/A = not installed</li>
-      <li>unknown = installed without version or package.json</li>
-      <li>master = install from master branch</li>
-      <li>vX.Y.Z = installed or to install from tag vX.Y.Z</li>
+    <ul style="margin:0;padding:0;" v-html="$t('explanation')">
+      
     </ul>
   </ui-section>
 
   <ui-section id="comps-utils">
-    <div class="header">Available Modules</div>
+    <div class="header" v-text="$t('availableModules')"></div>
     <span v-if="!hasSettings()">Please fill above Gitlab settings</span>
     <div class="layout horizontal">
       <ui-button @confirm="refresh">
         <i class="icon-refresh"></i>
-        Refresh List
+        {{$t('refreshList')}}
       </ui-button>
       <ui-button @confirm="refreshAssets">
         <i class="icon-refresh"></i>
-        Refresh Assets
+        {{$t('refreshAssets')}}
       </ui-button>
     </div>
     <div class="error" style="color:red">{{errorMsg}}</div>

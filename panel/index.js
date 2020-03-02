@@ -32,6 +32,10 @@ const vm = (el) => {
       this.getProjects();
     },
     methods: {
+      $t(key) {
+        debugger
+        return Editor.T('cc-modules.' + key);
+      },
       saveSettings() {
         const self = this;
         const fields = Object.keys(this.gitlab);

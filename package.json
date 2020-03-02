@@ -1,6 +1,6 @@
 {
   "name": "cc-modules",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A Cocos Creator Module Manager",
   "author": "aztack <aztack@163.com>",
   "main": "index.js",
@@ -15,7 +15,7 @@
   "panel": {
     "main": "panel/index.js",
     "type": "dockable",
-    "title": "CC Module Manager",
+    "title": "i18n:cc-modules.title",
     "width": 300,
     "height": 800
   },
