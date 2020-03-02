@@ -47,7 +47,7 @@
           </option>
         </ui-select>
         <span class="box name" :title="it.id">
-          {{it.name}}
+          <a :href="it.url" style="color:#bdbdbd">{{it.name}}</a>
           <ui-hint class="box desc">{{it.desc}}</ui-hint>
         </span>
       </li>

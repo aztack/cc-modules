@@ -11,5 +11,11 @@ module.exports = {
   namespaceName: 'Namespace Name',
   moduleDirectory: 'Module Directory',
   prefixes: 'Prefixes',
-  save: 'Save'
+  save: 'Save',
+  explanation: `
+    <li>N/A = not installed</li>
+    <li>unknown = installed without version or package.json</li>
+    <li>master = install from master branch</li>
+    <li>vX.Y.Z = installed or to install from tag vX.Y.Z</li>
+  `
 };

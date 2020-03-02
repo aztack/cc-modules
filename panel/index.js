@@ -71,7 +71,8 @@ const vm = (el) => {
             return {
               name: p.name,
               desc: p.description,
-              id: p.id
+              id: p.id,
+              url: p.web_url
             };
           }))
           .then(all => this.items = all.sort((a, b) => {
