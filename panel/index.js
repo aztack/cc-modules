@@ -33,7 +33,6 @@ const vm = (el) => {
     },
     methods: {
       $t(key) {
-        debugger
         return Editor.T('cc-modules.' + key);
       },
       saveSettings() {
