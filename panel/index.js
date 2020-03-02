@@ -119,15 +119,15 @@ const vm = (el) => {
             setTimeout(() => {
               $shell.mv(from, to);
               setTimeout(() => {
-                this.refreshAssets();
+                this.refreshAssets('cc_modules');
               }, 100);
               this.getProjects();
             }, 1000)
           });
         });
       },
-      refreshAssets() {
-        Editor.assetdb.refresh('db://assets/');
+      refreshAssets(dir = '') {
+        Editor.assetdb.refresh(`db://assets/${dir}`);
       },
       getTags(projectId, projectName) {
         return $gitlab.tags(projectId)
