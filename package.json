@@ -29,5 +29,12 @@
   "dependencies": {
     "extract-zip": "^1.6.7",
     "shelljs": "^0.8.3"
+  },
+  "runtime-resource": {
+    "path": "shared",
+    "name": "shared"
+  },
+  "reload": {
+    "ignore": ["shared/**/*"]
   }
 }
