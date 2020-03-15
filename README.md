@@ -53,7 +53,3 @@ Setup mandatory confgiurations.
 ### v0.0.1
 
 - Basic functionality
-
-## Todo
-
-- Allow install different type of modules into different directories
