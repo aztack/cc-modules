@@ -1,6 +1,6 @@
 {
   "name": "cc-modules",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A Cocos Creator Module Manager",
   "author": "aztack <aztack@163.com>",
   "main": "index.js",

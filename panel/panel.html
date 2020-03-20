@@ -20,7 +20,7 @@
 
   <ui-section id="comps-utils">
     <div class="header" v-text="$t('availableModules')"></div>
-    <span v-if="!hasSettings()">Please fill above Gitlab settings</span>
+    <span v-if="!hasSettings()">{{$t('fillGitlabSettings')}}</span>
     <div class="layout horizontal">
       <ui-button @confirm="refresh">
         <i class="icon-refresh"></i>
@@ -32,25 +32,28 @@
       </ui-button>
     </div>
     <div class="error" style="color:red">{{errorMsg}}</div>
-    <ul class="comp-list" v-if="items.length > 0">
-      <li class="comp-item layout horizontal" v-for="it in items" :data-id="it.id" style="margin-bottom: 2px;">
-        <a class="box" href="javascript:;" data-tag="master" :data-id="it.id" @click="download($event, it.id, it.name)">
-          <i class="icon-list-add"></i>
-        </a>
-        <ui-select :id="`project-tags-${it.id}`" class="box" class="tiny"
-          style="background-color: transparent;border-radius:2px;width:6em;"
-          v-if="tags[it.id]"
-          @confirm="onTagChanged($event, it)">
-          <option
-            v-for="tag in tags[it.id]"
-            :value="tag.name">{{tag.name}}
-          </option>
-        </ui-select>
-        <span class="box name" :title="it.id">
-          <a :href="it.url" style="color:#bdbdbd">{{it.name}}</a>
-          <ui-hint class="box desc">{{it.desc}}</ui-hint>
-        </span>
-      </li>
-    </ul>
+    <ui-section v-for="(group, items) in groupedItems">
+      <div class="header" v-text="group"></div>
+      <ul class="comp-list" v-if="items.length > 0">
+        <li class="comp-item layout horizontal" v-for="it in items" :data-id="it.id" style="margin-bottom: 2px;">
+          <a class="box" href="javascript:;" data-tag="master" :data-id="it.id" @click="download($event, it.id, it.name)">
+            <i class="icon-list-add"></i>
+          </a>
+          <ui-select :id="`project-tags-${it.id}`" class="box" class="tiny"
+            style="background-color: transparent;border-radius:2px;width:6em;"
+            v-if="tags[it.id]"
+            @confirm="onTagChanged($event, it)">
+            <option
+              v-for="tag in tags[it.id]"
+              :value="tag.name">{{tag.name}}
+            </option>
+          </ui-select>
+          <span class="box name" :title="it.id">
+            <a :href="it.url" style="color:#bdbdbd">{{it.name}}</a>
+            <ui-hint class="box desc">{{it.desc}}</ui-hint>
+          </span>
+        </li>
+      </ul>
+    </ui-section>
   </ul-section>
 </div>

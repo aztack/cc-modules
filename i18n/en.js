@@ -12,6 +12,7 @@ module.exports = {
   moduleDirectory: 'Module Directory',
   prefixes: 'Prefixes',
   save: 'Save',
+  fillGitlabSettings: 'Please fill above Gitlab settings',
   explanation: `
     <li>N/A = not installed</li>
     <li>unknown = installed without version or package.json</li>

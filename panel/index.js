@@ -15,6 +15,7 @@ const vm = (el) => {
         gitlab: $gitlab.GITLAB,
         settingsSaved: false,
         items: [],
+        groupedItems: {},
         branches: {},
         tags: {},
         errorMsg: ''
@@ -74,11 +75,20 @@ const vm = (el) => {
               url: p.web_url
             };
           }))
-          .then(all => this.items = all.sort((a, b) => {
-            if (a.name < b.name) return -1;
-            if (a.name > b.name) return 1;
-            return 0;
-          }))
+          .then(all => {
+            this.items = all.sort((a, b) => {
+              if (a.name < b.name) return -1;
+              if (a.name > b.name) return 1;
+              return 0;
+            });
+
+            this.groupedItems = this.items.reduce((all, it) => {
+              const [prefix, _] = it.name.split('-');
+              if (!all[prefix]) all[prefix] = [];
+              all[prefix].push(it);
+              return all;
+            }, {});
+          })
           .catch(err => {
             this.errorMsg = err;
           });

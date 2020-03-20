@@ -6,6 +6,9 @@
   overflow-x: hidden;
   height: 100%;
 }
+ui-section {
+  margin-bottom: 0;
+}
 .comp-list {
   padding: 0;
 }
