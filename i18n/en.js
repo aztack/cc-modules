@@ -4,7 +4,7 @@ module.exports = {
   availableModules: 'Available Modules',
   refreshList: 'Refresh List',
   refreshAssets: 'Refresh Assets',
-  endPoint: 'End Point!',
+  endPoint: 'End Point',
   privateToken: 'Private Token',
   apiVersion: 'API Version',
   namespaceId: 'Namespace Id',
