@@ -38,10 +38,42 @@ const gitlab = {
   fetchRaw() {
 
   },
-  fetch(url, type) {
+  fetch(url, type, onprogress) {
     return window.fetch(url, {
       headers: {
+        'Access-Control-Allow-Headers': 'Content-Length',
         'PRIVATE-TOKEN': this.GITLAB.privateToken
+      }
+    }).then(response => {
+      const contentLength = response.headers.get('content-length');
+      if (contentLength) {
+        const total = parseInt(contentLength, 10);
+        let loaded = 0;
+
+        return new Response(
+          new ReadableStream({
+            start(controller) {
+              const reader = response.body.getReader();
+              read();
+              function read() {
+                reader.read().then(({done,value}) => {
+                  if (done) {
+                    controller.close();
+                    return;
+                  }
+                  loaded += value.byteLength;
+                  if (typeof onprogress === 'function') onprogress(loaded, total);
+                  controller.enqueue(value);
+                  read();
+                }).catch(error => {
+                  controller.error(error)
+                })
+              }
+            }
+          })
+        )
+      } else {
+        return response;
       }
     }).then(res => {
       if (typeof res[type] === 'function') {
@@ -51,11 +83,11 @@ const gitlab = {
       }
     });
   },
-  fetchJson(url) {
-    return this.fetch(url, 'json');
+  fetchJson(url, onprogress) {
+    return this.fetch(url, 'json', onprogress);
   },
-  fetchText(url) {
-    return this.fetch(url, 'text');
+  fetchText(url, onprogress) {
+    return this.fetch(url, 'text', onprogress);
   },
   apiUrl(path, rest) {
     const url =`${this.GITLAB.endpoint}/${this.GITLAB.apiVer}/${path}`;
@@ -84,11 +116,11 @@ const gitlab = {
     const url = this.apiUrl('projects', [id, 'repository/tags']);
     return this.fetchJson(url);
   },
-  downloadArchive(id, sha) {
+  downloadArchive(id, sha, onprogress) {
     if (typeof sha === 'undefined') sha = 'master';
     const url = this.urlOfArchive(id, sha);
     return new Promise((resolve, reject) => {
-      this.fetch(url, 'blob').then(blob => {
+      this.fetch(url, 'blob', onprogress).then(blob => {
         var fileReader = new FileReader();
         fileReader.onload = function () {
           const buf = Buffer(new Uint8Array(this.result));

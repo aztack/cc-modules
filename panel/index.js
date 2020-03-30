@@ -110,7 +110,9 @@ const vm = (el) => {
           return;
         }
         const modDir = this.gitlab.moduleDirectory;
-        $gitlab.downloadArchive(projectId, tag).then(buf => {
+        $gitlab.downloadArchive(projectId, tag, (loaded,total) => {
+          console.log(Math.floor(loaded/total).toFixed(2));
+        }).then(buf => {
           const srcZip = write(`cache/${projectName}-${tag}.zip`, buf);
           const destDir = Editor.url(`db://assets/${modDir}`);
           if (!$fs.existsSync(destDir)) {
@@ -167,7 +169,7 @@ const vm = (el) => {
               const uiSelect = document.querySelector(`::shadow #project-tags-${projectId}`);
               uiSelect.value = cur;
             }, 0);
-            
+
           });
       },
       getMaster(projectId) {

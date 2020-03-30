@@ -35,6 +35,8 @@
     "name": "shared"
   },
   "reload": {
-    "ignore": ["shared/**/*"]
+    "ignore": [
+      "shared/**/*"
+    ]
   }
 }
