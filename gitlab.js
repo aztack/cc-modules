@@ -1,14 +1,16 @@
 const $fs = require('fs');
+const { read } = require_('utils.js');
+const $settings = JSON.parse(read('settings.json', '{}'));
 
 const gitlab = {
   GITLAB: {
-    endpoint: localStorage.getItem('endpoint'),
-    apiVer: localStorage.getItem('apiVer') || 'api/v4',
-    privateToken: localStorage.getItem('privateToken'),
-    nsId: localStorage.getItem('nsId'),
-    ns:localStorage.getItem('ns'),
-    prefixes: localStorage.getItem('prefixes') || 'comp,util',
-    moduleDirectory: localStorage.getItem('moduleDirectory') || 'cc_modules'
+    endpoint: $settings.endpoint,
+    apiVer: $settings.apiVer || 'api/v4',
+    privateToken: $settings.privateToken,
+    nsId: $settings.nsId,
+    ns:$settings.ns,
+    prefixes: $settings.prefixes || 'npmpkg,comp,util,prefab,ske,tex,particle',
+    moduleDirectory: $settings.moduleDirectory || 'cc_modules'
   },
   init(endpoint, privateToken, api) {
     this.GITLAB.endpoint = endpoint;

@@ -26,10 +26,9 @@ const vm = (el) => {
         window.gitlab = $gitlab;
     },
     compiled() {
-      if (!!localStorage.getItem('privateToken')) {
+      if (!!this.gitlab.privateToken) {
         this.clickSection('#gitlabSettings');
       }
-      Object.assign($gitlab.GITLAB, this.gitlab);
       this.getProjects();
     },
     methods: {
@@ -44,7 +43,7 @@ const vm = (el) => {
           alert(`${emptyField} can not be empty!`);
           return;
         }
-        fields.forEach(f => localStorage.setItem(f, this.gitlab[f]))
+        write('settings.json', JSON.stringify(this.gitlab, 0, 2));
         this.settingsSaved = true;
         setTimeout(() => {
           self.settingsSaved = false;
@@ -210,7 +209,7 @@ Editor.Panel.extend({
   },
   messages: {
     assetsDeleted(e) {
-      this.vm.refresh();
+      if (this.vm) this.vm.refresh();
     }
   }
 });

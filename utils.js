@@ -2,8 +2,14 @@ const pkgName = 'cc-modules';
 const unzip = require('extract-zip')
 const $fs = require('fs');
 
-function read(relativePath) {
-  return $fs.readFileSync(Editor.url(`packages://${pkgName}/${relativePath}`), 'utf-8');
+function read(relativePath, val) {
+  let str = val || '';
+  try {
+    str = $fs.readFileSync(Editor.url(`packages://${pkgName}/${relativePath}`), 'utf-8');
+  } catch (e) {
+    console.error(`read file ${relativePath} failed`);
+  }
+  return str;
 }
 function write(relativePath, data) {
   const path = Editor.url(`packages://${pkgName}/${relativePath}`);
