@@ -43,6 +43,14 @@ Setup mandatory confgiurations.
 ## Changelog
 
 
+### v0.0.4
+
+- Load/Save settings to file to avoid losing settings when open more than one Cocos Creator
+
+### v0.0.3
+
+- Group modules with same prefix into sections
+
 ### v0.0.2
 
 - Support custom `Prefixes`
