@@ -13,6 +13,7 @@ module.exports = {
   prefixes: 'Prefixes',
   save: 'Save',
   fillGitlabSettings: 'Please fill above Gitlab settings',
+  toggleFoldAll: 'Fold/Unfold All',
   explanation: `
     <li>N/A = not installed</li>
     <li>unknown = installed without version or package.json</li>

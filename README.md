@@ -42,6 +42,10 @@ Setup mandatory confgiurations.
 
 ## Changelog
 
+### v0.0.5
+
+- Automatically install dependencies
+- Add search bar, fold/unfold button
 
 ### v0.0.4
 

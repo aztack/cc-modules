@@ -1,6 +1,6 @@
 {
   "name": "cc-modules",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A Cocos Creator Module Manager",
   "author": "aztack <aztack@163.com>",
   "main": "index.js",
@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "extract-zip": "^1.6.7",
+    "glob": "^7.1.6",
     "shelljs": "^0.8.3"
   },
   "runtime-resource": {

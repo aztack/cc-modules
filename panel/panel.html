@@ -32,11 +32,16 @@
       </ui-button>
     </div>
     <div class="error" style="color:red">{{errorMsg}}</div>
+    <ui-input placeholder="search" v-value="search" style="margin-top: 4px" @dblclick="search=''"></ui-input>
+    <ui-button @confirm="toggleFoldAll()">
+      <i class="icon-refresh"></i>
+      {{$t('toggleFoldAll')}}
+    </ui-button>
     <ui-section v-for="(group, items) in groupedItems">
       <div class="header" v-text="group"></div>
       <ul class="comp-list" v-if="items.length > 0">
-        <li class="comp-item layout horizontal" v-for="it in items" :data-id="it.id" style="margin-bottom: 2px;">
-          <a class="box" href="javascript:;" data-tag="master" :data-id="it.id" @click="download($event, it.id, it.name)">
+        <li class="comp-item layout horizontal" v-for="it in items" :data-id="it.id" style="margin-bottom: 2px;" v-show="!search || it.name.indexOf(search) >= 0">
+          <a class="box" href="javascript:;" data-tag="master" :data-id="it.id" @click="download($event, it.id, it.name);search='';">
             <i class="icon-list-add"></i>
           </a>
           <ui-select :id="`project-tags-${it.id}`" class="box" class="tiny"

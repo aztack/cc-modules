@@ -1,7 +1,9 @@
 const { read, write, extract} = require_('utils.js');
 const $gitlab = require_('gitlab.js');
 const $shell = require_('node_modules/shelljs');
+const $glob = require_('node_modules/glob');
 const $fs = require('fs');
+const $path = require('path');
 const NA = 'N/A';
 const UNKNOWN = 'unknown';
 
@@ -18,7 +20,9 @@ const vm = (el) => {
         groupedItems: {},
         branches: {},
         tags: {},
-        errorMsg: ''
+        errorMsg: '',
+        downloadingDeps: false,
+        search: ''
       }
     },
     created() {
@@ -30,6 +34,11 @@ const vm = (el) => {
         this.clickSection('#gitlabSettings');
       }
       this.getProjects();
+    },
+    watch: {
+      search(newVal) {
+        if (newVal) this.toggleFoldAll(false);
+      }
     },
     methods: {
       $t(key) {
@@ -66,7 +75,9 @@ const vm = (el) => {
           .then(all => all.map(p => {
             this.errorMsg = '';
             this.getTags(p.id, p.name);
-            this.getMaster(p.id);
+            this.getMaster(p.id).catch((e) => {
+              console.warn(e)
+            });;
             return {
               name: p.name,
               desc: p.description,
@@ -104,40 +115,51 @@ const vm = (el) => {
         return values.filter(v => v != null).length === values.length;
       },
       download(e, projectId, projectName) {
-        const tag = e.target.closest('li').querySelector('ui-select').value
+        this.downloadingDeps = true;
+        const tag = e === null ? 'master' : e.target.closest('li').querySelector('ui-select').value;
         if (tag === NA || tag === UNKNOWN) {
           alert('Please select a valid tag!');
           return;
         }
         const modDir = this.gitlab.moduleDirectory;
-        $gitlab.downloadArchive(projectId, tag, (loaded,total) => {
-          console.log(Math.floor(loaded/total).toFixed(2));
-        }).then(buf => {
-          const srcZip = write(`cache/${projectName}-${tag}.zip`, buf);
-          const destDir = Editor.url(`db://assets/${modDir}`);
-          if (!$fs.existsSync(destDir)) {
-            $fs.mkdirSync(destDir);
-          }
-          const to = `${destDir}/${projectName}`;
-          if ($fs.existsSync(to)) {
-            confirm(`Please delete existing module first!`);
-            return;
-          }
-          let commit = this.tags[projectId].find(t => t.name === tag).commit;
-          if (!commit) {
-            commit = this.branches[projectId].commit;
-          }
-          const sha = commit.id;
-          extract(srcZip, destDir).then(() => {
-            const from = `${destDir}/${projectName}-${tag}-${sha}`;
-            // $fs.renameSync(from, to);
-            setTimeout(() => {
-              $shell.mv(from, to);
+        return new Promise((rs, rj) => {
+          $gitlab.downloadArchive(projectId, tag, (loaded,total) => {
+            console.log(Math.floor(loaded/total).toFixed(2));
+          }).then(buf => {
+            const srcZip = write(`cache/${projectName}-${tag}.zip`, buf);
+            const destDir = Editor.url(`db://assets/${modDir}`);
+            if (!$fs.existsSync(destDir)) {
+              $fs.mkdirSync(destDir);
+            }
+            const to = `${destDir}/${projectName}`;
+            if ($fs.existsSync(to)) {
+              confirm(`Please delete existing module first!`);
+              rj();
+              return;
+            }
+            let commit = this.tags[projectId].find(t => t.name === tag).commit;
+            if (!commit) {
+              commit = this.branches[projectId].commit;
+            }
+            const sha = commit.id;
+            extract(srcZip, destDir).then(() => {
+              const from = `${destDir}/${projectName}-${tag}-${sha}`;
+              Editor._error = Editor.error;
+              Editor.error = () => {};
               setTimeout(() => {
-                this.refreshAssets('cc_modules');
-              }, 100);
-              this.getProjects();
-            }, 1000)
+                $shell.mv(from, to);
+                setTimeout(() => {
+                  this.parseDependencies(to)
+                    .then(rs)
+                    .catch(() => {
+                      Editor.error = Editor._error;
+                      this.downloadingDeps = false;
+                      this.getProjects();
+                      this.refreshAssets('cc_modules');
+                    });
+                }, 100);
+              }, 1000)
+            }).catch(rj);
           });
         });
       },
@@ -195,6 +217,52 @@ const vm = (el) => {
         } catch (e) {
           return UNKNOWN;
         }
+      },
+      parseDependencies(dir) {
+        const url = Editor.url(`db://assets/${this.gitlab.moduleDirectory}`);
+        const scripts = $glob.sync(`${dir}/*.{js,ts}`);
+        const deps = scripts.reduce((all, file) => {
+          const content = $fs.readFileSync(file).toString('utf-8');
+          const deps = this.extractDeps(content).filter(dir => !$fs.existsSync($path.resolve(url, dir)));
+          return all.concat(deps);
+        }, []);
+
+        if (!deps.length) {
+          return Promise.reject();
+        }
+        const promises = Promise.all(deps.map(dep => {
+          try {
+            let repo = this.items.find(it => it.name === dep || it.name === `npmpkg-${dep}`);
+            Editor.log(`Downloading dependency ${repo.name}`);
+            return this.download(null, repo.id, repo.name);
+          } catch(e) {
+            Editor.error(`Download ${dep} failed:`, e);
+            return Promise.resolve();
+          }
+        }));
+
+        return promises;
+      },
+      toggleFoldAll(flag) {
+        const secs = this.$el.querySelector('#comps-utils').querySelectorAll('ui-section');
+        if (!secs || secs.length === 0) return;
+        secs.forEach(sec => {
+          if (typeof flag !== 'undefined') {
+            sec._folded = flag;
+            flag ? sec.setAttribute('folded', true) : sec.removeAttribute('folded');
+          } else {
+            if (sec._folded = !sec._folded) {
+              sec.setAttribute('folded', true);
+            } else {
+              sec.removeAttribute('folded');
+            }
+          }
+        });
+      },
+      extractDeps(content) {
+        const requires = content.match(/(?<=require\([':])(.*?)(?=['"]\))/g) || [];
+        const imports = content.match(/(?<=import.*?from\s+['"])(.*?)(?=['" ;\n])/g) || [];
+        return requires.concat(imports);
       }
     }
   });
@@ -211,7 +279,9 @@ Editor.Panel.extend({
   },
   messages: {
     assetsDeleted(e) {
-      if (this.vm) this.vm.refresh();
+      if (this.vm && !this.vm.downloadingDeps) {
+        this.vm.refresh();
+      }
     }
   }
 });

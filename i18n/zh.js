@@ -13,6 +13,7 @@ module.exports = {
   prefixes: '模块前缀列表',
   save: 'Save',
   fillGitlabSettings: '请填写Gitlab设置参数',
+  toggleFoldAll: '收起/展开',
   explanation: `
     <li>N/A = 未安装</li>
     <li>unknown = 未知版本</li>
